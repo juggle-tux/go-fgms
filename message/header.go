@@ -1,9 +1,4 @@
-
 package message
-
-import (
-
-)
 
 type HeaderMsg struct {
 
@@ -30,6 +25,6 @@ type HeaderMsg struct {
 }
 
 // returns Callsign as string
-func (me *HeaderMsg) Callsign() string{
+func (me *HeaderMsg) Callsign() string {
 	return BytesToString(me.CallsignBytes[:])
 }

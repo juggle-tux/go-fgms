@@ -1,18 +1,15 @@
-
-
 package message
-
 
 /* T_PositionMsg - Position Message
 
-	Original Source: http://gitorious.org/fgms/fgms-0-x/blobs/master/src/flightgear/MultiPlayer/mpmessages.hxx#line78
-	Note:
-		all the important values are float32
-		with the exception of position which is float64
-		This caused a clash with Point3D which needs to be either 32 or 64
-		- For now the 32's are converted to 64's
+Original Source: http://gitorious.org/fgms/fgms-0-x/blobs/master/src/flightgear/MultiPlayer/mpmessages.hxx#line78
+Note:
+	all the important values are float32
+	with the exception of position which is float64
+	This caused a clash with Point3D which needs to be either 32 or 64
+	- For now the 32's are converted to 64's
 */
-type PositionMsg struct{
+type PositionMsg struct {
 
 	/// Name of the aircraft model
 	// - char Model[MAX_MODEL_NAME_LEN];
@@ -29,7 +26,6 @@ type PositionMsg struct{
 	// Position wrt the earth centered frame
 	// - xdr_data2_t position[3];
 	Position [3]float64
-
 
 	// Orientation wrt the earth centered frame, stored in the angle axis
 	// representation where the angle is coded into the axis length

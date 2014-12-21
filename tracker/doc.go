@@ -1,4 +1,4 @@
-/* 
+/*
 Package tracker - Tracking flights by saving to database
 
 	The origininal sources are at:
@@ -6,6 +6,5 @@ Package tracker - Tracking flights by saving to database
 	- http://gitorious.org/fgms/fgms-0-x/blobs/master/src/server/fg_tracker.cxx
 
 */
-
 
 package tracker

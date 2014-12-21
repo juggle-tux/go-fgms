@@ -1,6 +1,6 @@
 package fgms
 
-import(
+import (
 	"fmt"
 	"log"
 	"net"
@@ -8,25 +8,22 @@ import(
 )
 
 type crossfeed struct {
-	Chan chan []byte
-	Hosts map[string]*crossfeed_host
+	Chan   chan []byte
+	Hosts  map[string]*crossfeed_host
 	Failed int
-	Sent int
+	Sent   int
 	//MT_Failed int
 	//MT_Sent int
 }
 
-type crossfeed_host struct{
-	Addr string
-	Active bool
+type crossfeed_host struct {
+	Addr      string
+	Active    bool
 	LastError string
-	Sock net.Conn
+	Sock      net.Conn
 }
 
-
 var Crossfeed *crossfeed
-
-
 
 // Initialise and setup the `CrossFeed`
 func SetupCrossfeed() {
@@ -41,7 +38,7 @@ func SetupCrossfeed() {
 }
 
 // add a host
-func (me *crossfeed) Add(addr string, port int){
+func (me *crossfeed) Add(addr string, port int) {
 
 	host := new(crossfeed_host)
 	host.Addr = fmt.Sprintf("%s:%d", addr, port)
@@ -53,7 +50,7 @@ func (me *crossfeed) Add(addr string, port int){
 // Attempt to connect and setup a Connection
 // Should dns fail, address not exist or not able to connect
 // the connection will be marked as Active = false with LastError
-func (me *crossfeed) InitializeConn( conn *crossfeed_host){
+func (me *crossfeed) InitializeConn(conn *crossfeed_host) {
 
 	if conn.Active {
 		return // todo - need to define when its inactive, eg connection dropped
@@ -79,32 +76,32 @@ func (me *crossfeed) InitializeConn( conn *crossfeed_host){
 	// all good
 	conn.Active = true
 	conn.LastError = ""
-	log.Println("Crossfeed: Connected to ", conn.Addr )
+	log.Println("Crossfeed: Connected to ", conn.Addr)
 }
 
 // Starts a timer to reconnect to hosts that are down  every 60 secs
 // this is started as a goroutine
-func (me *crossfeed) StartReconnectTimer(){
+func (me *crossfeed) StartReconnectTimer() {
 
 	ticker := time.NewTicker(time.Second * 60) // TODO roll back
 	//go func() {
-		for _ = range ticker.C {
-			for _, host := range me.Hosts {
-				if host.Active == false {
-					log.Println("> Attempt Reconnect Crossfeed = ", host.Addr )
-					go me.InitializeConn(host)
-				}
+	for _ = range ticker.C {
+		for _, host := range me.Hosts {
+			if host.Active == false {
+				log.Println("> Attempt Reconnect Crossfeed = ", host.Addr)
+				go me.InitializeConn(host)
 			}
 		}
+	}
 	//}()
 }
 
 // Listen for xdr packets from channel, and send to xrossfeeds
-func (me *crossfeed) Listen(){
+func (me *crossfeed) Listen() {
 	fmt.Println("Crossfeed: Listening")
 	for {
 
-		xdr_bytes := <- me.Chan
+		xdr_bytes := <-me.Chan
 
 		for _, cf := range me.Hosts {
 			if cf.Active {
@@ -112,7 +109,7 @@ func (me *crossfeed) Listen(){
 				if err != nil {
 					fmt.Println("Crossfeed error", err)
 					me.Failed++
-				}else {
+				} else {
 					me.Sent++
 				}
 			}
@@ -120,4 +117,3 @@ func (me *crossfeed) Listen(){
 
 	}
 }
-

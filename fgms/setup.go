@@ -1,10 +1,7 @@
-
 package fgms
 
-
 // Auto Initialize App
-func init(){
-
+func init() {
 
 	SetupBlackList()
 	SetupCrossfeed()

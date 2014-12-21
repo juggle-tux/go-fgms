@@ -1,17 +1,16 @@
-
 package fgms
 
-
-import(
+import (
 	"github.com/freeflightsim/go-fgms/tracker"
 )
+
 //  Add a tracking server
 //  int -1 for fail or SUCCESS
-func (me *FgServer) AddTracker(host string, port int, isTracked bool){
+func (me *FgServer) AddTracker(host string, port int, isTracked bool) {
 
 	me.IsTracked = isTracked
 	me.Tracker = tracker.NewFG_Tracker(host, port, 0)
-	
+
 	/* TODO
 	#ifndef NO_TRACKER_PORT
 	#ifdef USE_TRACKER_PORT
@@ -41,21 +40,19 @@ func (me *FgServer) AddTracker(host string, port int, isTracked bool){
 	*/
 } // FgServer::AddTracker()
 
-
-
 // Updates the remote tracker  ?
 //func (me *FgServer) UpdateTracker(Callsign string, Passwd string, Modelname string, Timestamp int64, messType int) int {
-func (me *FgServer) UpdateTracker( player *Player, messType int) int {
+func (me *FgServer) UpdateTracker(player *Player, messType int) int {
 	//#ifndef NO_TRACKER_PORT
 	//char            TimeStr[100];
 	//mT_PlayerListIt CurrentPlayer;
 	//Point3D         PlayerPosGeod;
-	
+
 	//string          Aircraft;
 	//var Aircraft string = player.Aircraft()
 	//string          Message;
 	var Message string
-	
+
 	//tm              *tm;
 	//FG_TRACKER::m_MsgBuffer buf;
 
@@ -63,7 +60,7 @@ func (me *FgServer) UpdateTracker( player *Player, messType int) int {
 	//{
 	//	return (1);
 	//}
-	
+
 	// Creates the UTC time string
 	//tm = gmtime (& Timestamp);
 	//tm := Now()
@@ -77,7 +74,7 @@ func (me *FgServer) UpdateTracker( player *Player, messType int) int {
 		tm->tm_min,
 		tm->tm_sec
 	); */
-	TimeStr :=  "2013-12-25 11.22.33"
+	TimeStr := "2013-12-25 11.22.33"
 	// Edits the aircraft name string
 	/* size_t Index = Modelname.rfind ("/");
 	if (Index != string::npos)
@@ -96,8 +93,8 @@ func (me *FgServer) UpdateTracker( player *Player, messType int) int {
 	*/
 	// Creates the message
 	if messType == tracker.CONNECT {
-	
-		Message  = "CONNECT "
+
+		Message = "CONNECT "
 		Message += player.Callsign
 		Message += " "
 		//Message += player.Passwd
@@ -109,22 +106,22 @@ func (me *FgServer) UpdateTracker( player *Player, messType int) int {
 		// queue the message
 		//sprintf (buf.mtext, "%s", Message.c_str());
 		//buf.mtype = 1;
-	//#ifdef USE_TRACKER_PORT
+		//#ifdef USE_TRACKER_PORT
 		//pthread_mutex_lock( &msg_mutex ); // acquire the lock
 		//msg_queue.push_back(Message); // queue the message
 		//pthread_cond_signal( &condition_var );  // wake up the worker
 		//pthread_mutex_unlock( &msg_mutex ); // give up the lock
-	//#else // !#ifdef USE_TRACKER_PORT
+		//#else // !#ifdef USE_TRACKER_PORT
 		//msgsnd (m_ipcid, &buf, strlen(buf.mtext), IPC_NOWAIT);
-	//#endif // #ifdef USE_TRACKER_PORT y/n
-	//#ifdef ADD_TRACKER_LOG
+		//#endif // #ifdef USE_TRACKER_PORT y/n
+		//#ifdef ADD_TRACKER_LOG
 		//write_msg_log(Message.c_str(), Message.size(), (char *)"IN: "); // write message log
-	//#endif // #ifdef ADD_TRACKER_LOG
+		//#endif // #ifdef ADD_TRACKER_LOG
 		me.TrackerConnect++ // count a CONNECT message queued
-		return 0 //(0);
-	
-	}else if messType == tracker.DISCONNECT {
-		Message  = "DISCONNECT "
+		return 0            //(0);
+
+	} else if messType == tracker.DISCONNECT {
+		Message = "DISCONNECT "
 		Message += player.Callsign
 		Message += " "
 		//Message += player.Passwd
@@ -135,33 +132,33 @@ func (me *FgServer) UpdateTracker( player *Player, messType int) int {
 		// queue the message
 		//sprintf (buf.mtext, "%s", Message.c_str());
 		//buf.mtype = 1;
-	//#ifdef USE_TRACKER_PORT
+		//#ifdef USE_TRACKER_PORT
 		//pthread_mutex_lock( &msg_mutex ); // acquire the lock
 		//msg_queue.push_back(Message); // queue the message
 		//pthread_cond_signal( &condition_var );  // wake up the worker
 		//pthread_mutex_unlock( &msg_mutex ); // give up the lock
-	//#else // !#ifdef USE_TRACKER_PORT
+		//#else // !#ifdef USE_TRACKER_PORT
 		//msgsnd (m_ipcid, &buf, strlen(buf.mtext), IPC_NOWAIT);
-	//#endif // #ifdef USE_TRACKER_PORT y/n
-	//#ifdef ADD_TRACKER_LOG
+		//#endif // #ifdef USE_TRACKER_PORT y/n
+		//#ifdef ADD_TRACKER_LOG
 		//write_msg_log(Message.c_str(), Message.size(),(char *)"IN: "); // write message log
-	//#endif // #ifdef ADD_TRACKER_LOG
+		//#endif // #ifdef ADD_TRACKER_LOG
 		//m_TrackerDisconnect++; // count a DISCONNECT message queued
 		me.TrackerDisconnect++ // count a DISCONNECT message queued
-		return 0 //(0);
+		return 0               //(0);
 	}
-	
+
 	// We only arrive here if type!=CONNECT and !=DISCONNECT
 	//CurrentPlayer = m_PlayerList.begin();
 	//while (CurrentPlayer != m_PlayerList.end())
 	//{
 	for _, CurrentPlayer := range me.Players {
 		if CurrentPlayer.IsLocal {
-		
+
 			//sgCartToGeod (CurrentPlayer->LastPos, PlayerPosGeod);
-			PlayerPosGeod := SG_CartToGeod( CurrentPlayer.LastPos )
-			
-			Message =  "POSITION "
+			PlayerPosGeod := SG_CartToGeod(CurrentPlayer.LastPos)
+
+			Message = "POSITION "
 			Message += CurrentPlayer.Callsign
 			Message += " "
 			//Message += CurrentPlayer.Passwd;
@@ -190,4 +187,3 @@ func (me *FgServer) UpdateTracker( player *Player, messType int) int {
 	//#endif // !NO_TRACKER_PORT
 	return 0 //(0);
 } // UpdateTracker (...)
-

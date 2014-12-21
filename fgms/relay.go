@@ -1,7 +1,6 @@
-
 package fgms
 
-import(
+import (
 	"fmt"
 	"log"
 	"net"
@@ -9,13 +8,13 @@ import(
 )
 
 type RelayData struct {
-	Bytes []byte
+	Bytes  []byte
 	Player *Player
 }
 
 type relays struct {
-	Chan chan RelayData
-	Hosts map[string]net.Conn
+	Chan          chan RelayData
+	Hosts         map[string]net.Conn
 	PktsForwarded int64
 }
 
@@ -29,15 +28,13 @@ func SetupRelays() {
 	go Relays.Listen()
 }
 
-
 // Insert a new relay server into internal list (does a DNS lookup)
 func (me *relays) Add(host_name string, port int) {
 
 	log.Println("> Add Relay = ", host_name, port)
 
-
 	//= Now go and do check is background
-	go func(host_name string, port int){
+	go func(host_name string, port int) {
 
 		// Get IP address from DNS
 		addrs, err := net.LookupHost(host_name)
@@ -68,21 +65,17 @@ func (me *relays) Add(host_name string, port int) {
 }
 
 // Check if the address is a known relay
-func (me *relays) IsKnown(address *net.UDPAddr) bool{
+func (me *relays) IsKnown(address *net.UDPAddr) bool {
 	_, found := me.Hosts[address.String()]
 	return found
 }
 
-
-
-
-
 // Listen on channel and send to relays
-func (me *relays) Listen(){
+func (me *relays) Listen() {
 
 	for {
 		// Got data from channel
-		relay_data := <- me.Chan
+		relay_data := <-me.Chan
 
 		now := Now()
 		UpdateInactive := (now - relay_data.Player.LastRelayedToInactive) > UPDATE_INACTIVE_PERIOD
@@ -92,7 +85,7 @@ func (me *relays) Listen(){
 
 		for _, host := range me.Hosts {
 			if UpdateInactive { //|| IsInRange(*relay, *SendingPlayer) {
-				fmt.Println("relay to=",  host)
+				fmt.Println("relay to=", host)
 				//if (CurrentRelay->Address.getIP() != SendingPlayer->Address.getIP())
 				//{
 				//  m_DataSocket->sendto(Msg, Bytes, 0, &CurrentRelay->Address);

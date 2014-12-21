@@ -1,11 +1,9 @@
-
 package fgms
-
 
 const VERSION = "0.1-go-experimental"
 
 const (
-	SUCCESS                 = 0
+	SUCCESS = 0
 	ERROR_COMMANDLINE
 	ERROR_CREATE_SOCKET
 	ERROR_COULDNT_BIND
@@ -14,10 +12,9 @@ const (
 )
 
 // other constants
-const MAX_PACKET_SIZE         = 1024
-const UPDATE_INACTIVE_PERIOD  = 1
-const MAX_TELNETS             = 5
-
+const MAX_PACKET_SIZE = 1024
+const UPDATE_INACTIVE_PERIOD = 1
+const MAX_TELNETS = 5
 
 /*
 const (
